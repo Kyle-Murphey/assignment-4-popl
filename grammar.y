@@ -192,7 +192,7 @@ construct_if :
       // Second semantic action
       //itab_instruction_add (itab, ?????, NOARG, NOARG, TBDARG);
       // something = something
-      tab_instruction_add (itab, OP_JMP, NOARG, NOARG, TBDARG);
+      itab_instruction_add (itab, OP_JMP, NOARG, NOARG, TBDARG);
       @$.begin.line = INSTRUCTION_LAST;
 
       // Retrieve result of first semantic action to set the jump destination:
