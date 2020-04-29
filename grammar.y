@@ -113,8 +113,7 @@ construct_while :
     T_WHILE 
     {
       // First semantic action.
-      // TODO: Store the next instruction entry in the parser's stack
-      // Use INSTRUCTION_NEXT;
+      // Store the next instruction entry in the parser's stack
       @$.begin.line = INSTRUCTION_NEXT;
     }
     T_LPAR 
@@ -122,28 +121,23 @@ construct_while :
     T_RPAR 
     {
       // Second semantic action
-      // TODO: Jump to the end of the while body if the condition 
+      // Jump to the end of the while body if the condition
       // evaluates to zero.
 
-      //itab_instruction_add (itab,  ...);
       itab_instruction_add (itab, OP_JZ, $4->addr, NOARG, TBDARG);
 
       // Store the last instruction generated. You will need to complete it later.
-      // @$.begin.line = ???
       @$.begin.line = INSTRUCTION_LAST;
     }
     T_DO 
     stmt
     {
       // Third semantic action
-      // TODO: generate an unconditional jump to the first instruction of l_expr
-      // int jump_dst = some_instruction_entry
-      // itab_instruction_add (itab, ?????, NOARG, NOARG, ?????);
+      // generate an unconditional jump to the first instruction of l_expr
       int jump_dst = @2.begin.line;
       itab_instruction_add (itab, OP_JMP, NOARG, NOARG, jump_dst);
 
-      // TODO: set the destination jump that terminates the loop
-      // itab->tab[what_entry]->whatfield = where;
+      // set the destination jump that terminates the loop
       int jmp_entry = @6.begin.line;
       itab->tab[jmp_entry]->addr3 = INSTRUCTION_NEXT;
     }
@@ -153,7 +147,7 @@ construct_repeat:
     T_REPEAT
     {
       // First semantic action
-      // TODO: store the next instruction entry in the stack (use @$.begin.line instead of $$)
+      // store the next instruction entry in the stack (use @$.begin.line instead of $$)
       @$.begin.line = INSTRUCTION_NEXT;
     }
     stmt_list 
@@ -163,14 +157,12 @@ construct_repeat:
     T_RPAR
     {
       // Second semantic action.
-      // TODO: Retrieve the value stored in the stack in the first semantic action
+      // Retrieve the value stored in the stack in the first semantic action
       // above (the second symbol)
-      // int jump_dst = ?????
       int jump_dst = @2.begin.line;
 
-      // TODO: Generate a jump-if-zero (OP_JZ) to the address stored in the first semantic
+      // Generate a jump-if-zero (OP_JZ) to the address stored in the first semantic
       // action of this rule
-      //itab_instruction_add (itab, ???, $6->addr, NOARG, ?????);
       itab_instruction_add (itab, OP_JZ, $6->addr, NOARG, jump_dst);
     }
     ;
@@ -182,22 +174,16 @@ construct_if :
     T_RPAR 
     {
       // First semantic action
-      //itab_instruction_add (itab, ???, $3->addr, NOARG, TBDARG);
-      //@$.begin.line = ?????
       itab_instruction_add (itab, OP_JZ, $3->addr, NOARG, TBDARG);
       @$.begin.line = INSTRUCTION_LAST;
     }
     stmt 
     {
       // Second semantic action
-      //itab_instruction_add (itab, ?????, NOARG, NOARG, TBDARG);
-      // something = something
       itab_instruction_add (itab, OP_JMP, NOARG, NOARG, TBDARG);
       @$.begin.line = INSTRUCTION_LAST;
 
       // Retrieve result of first semantic action to set the jump destination:
-      // int jmp_entry = ????.begin.line;
-      // itab->tab[????]->???? = ?????;
       int jmp_entry = @5.begin.line;
       itab->tab[jmp_entry]->addr3 = INSTRUCTION_NEXT;
     }
@@ -205,8 +191,6 @@ construct_if :
     {
       // Third semantic action
       // Complete the destination of the jump performed in the second semantic action
-      //int jmp_entry = ?????.begin.line;
-      //itab->tab[?????]->????? = ??????;
       int jmp_entry = @7.begin.line;
       itab->tab[jmp_entry]->addr3 = INSTRUCTION_NEXT;
     }
